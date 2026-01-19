@@ -8,6 +8,13 @@
       "when": 1768827231052,
       "tag": "0000_melodic_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768851236075,
+      "tag": "0001_bored_beyonder",
+      "breakpoints": true
     }
   ]
 }
