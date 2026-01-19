@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -56,8 +56,12 @@ const SignUpForm = () => {
       onSuccess: () => {
         router.push("/dashboard");
       },
-      onError: () => {
-        toast.error("[SIGNUP_EMAIL_ERROR] Algo inesperado ocorreu.");
+      onError: (ctx) => {
+        if (ctx.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
+          toast.error("Email já cadastrado! Tente usar outro email.");
+          return;
+        }
+        toast.error(ctx.error.code);
       },
     });
   }
