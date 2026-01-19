@@ -1,5 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -21,8 +24,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
 
 const registerSchema = z.object({
   name: z.string().trim().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -55,8 +56,8 @@ const SignUpForm = () => {
       onSuccess: () => {
         router.push("/dashboard");
       },
-      onError: (error) => {
-        console.log(error);
+      onError: () => {
+        toast.error("[SIGNUP_EMAIL_ERROR] Algo inesperado ocorreu.");
       },
     });
   }
