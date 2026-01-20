@@ -3,22 +3,26 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 
+import DashboardHeader from "./components/dashboard-header";
+
 const DashboardPage = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  // Route protected -> only logged-in users with verified email can access.
   if (!session) {
-    redirect("/auth");
-  }
-
-  if (!session?.user.emailVerified) {
     redirect("/auth");
   }
 
   return (
     <div>
+      <DashboardHeader
+        user={{
+          name: session.user.name ?? null,
+          email: session.user.email ?? null,
+          image: session.user.image ?? null,
+        }}
+      />
       <h1>Dashboard Page!</h1>
     </div>
   );
