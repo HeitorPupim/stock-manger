@@ -10,9 +10,11 @@ const DashboardPage = async () => {
     headers: await headers(),
   });
 
-  if (!session) {
+  if (!session?.user.emailVerified) {
     redirect("/auth");
   }
+
+  
 
   return (
     <div>
