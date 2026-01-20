@@ -7,6 +7,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
+import { toUserSummary } from "@/lib/user";
 
 import { AppSidebar } from "../components/app-sidebar";
 import DashboardHeader from "./dashboard/components/dashboard-header";
@@ -21,11 +22,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-12 items-center justify-between gap-4 border-b px-4">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <span className="text-sm font-medium">Casa Das Redes</span>
-          </div>
-          <DashboardHeader user={session?.user ?? null} />
+          <SidebarTrigger />
+          <DashboardHeader user={toUserSummary(session?.user)} />
         </header>
         <div className="flex-1">{children}</div>
       </SidebarInset>

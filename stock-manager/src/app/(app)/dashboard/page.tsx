@@ -19,6 +19,7 @@ const DashboardPage = async () => {
 
   return (
     <div>
+      
       <DataTable data={minimumStockResult} />
     </div>
   );

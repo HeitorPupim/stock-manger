@@ -1,17 +1,12 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { UserSummary } from "@/lib/user";
 
 import SignOutButton from "./sign-out-button";
 
 type DashboardHeaderProps = {
-  user:
-    | {
-        name: string | null;
-        email: string | null;
-        image: string | null;
-      }
-    | null;
+  user: UserSummary | null;
 };
 
 const getInitials = (value: string | null) => {
@@ -37,7 +32,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
     <div className="flex items-center gap-3">
       <Avatar>
         <AvatarImage src={user.image ?? undefined} alt={avatarAlt} />
-        <AvatarFallback className="bg-amber-300">{avatarFallback}</AvatarFallback>
+        <AvatarFallback className="bg-accent border-accent-foreground border">{avatarFallback}</AvatarFallback>
       </Avatar>
       <SignOutButton />
     </div>
