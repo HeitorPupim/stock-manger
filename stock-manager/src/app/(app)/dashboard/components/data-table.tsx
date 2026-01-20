@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { columns,  MinimumStockRow } from "./columns";
+import { columns, type MinimumStockRow } from "./columns";
 
 type FilterPreset = {
   id: "all" | "rede" | "pano";
@@ -110,7 +110,7 @@ const DataTable = ({ data: initialData }: { data: MinimumStockRow[] }) => {
     };
   }, [fetchData]);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
+   
   const table = useReactTable({
     data,
     columns,

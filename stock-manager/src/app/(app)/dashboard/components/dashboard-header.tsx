@@ -5,11 +5,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import SignOutButton from "./sign-out-button";
 
 type DashboardHeaderProps = {
-  user: {
-    name: string | null;
-    email: string | null;
-    image: string | null;
-  };
+  user:
+    | {
+        name: string | null;
+        email: string | null;
+        image: string | null;
+      }
+    | null;
 };
 
 const getInitials = (value: string | null) => {
@@ -24,31 +26,21 @@ const getInitials = (value: string | null) => {
 };
 
 const DashboardHeader = ({ user }: DashboardHeaderProps) => {
+  if (!user) {
+    return null;
+  }
 
   const avatarAlt = user.name ?? user.email ?? "User avatar";
   const avatarFallback = getInitials(user.name ?? user.email);
 
-
   return (
-    <header>
-      <div className="flex flex-row flex-wrap items-center gap-12"></div>
-
-      <div className="flex items-center justify-between border-b px-6 py-5">
-        <h1 className="text-foreground text-xl font-bold uppercase">
-          Dashboard
-        </h1>
-
-        <div className="flex items-center justify-center gap-3">
-          <Avatar>
-            <AvatarImage src={user.image ?? undefined} alt={avatarAlt} />
-            <AvatarFallback className="bg-amber-300">{avatarFallback}</AvatarFallback>
-          </Avatar>
-
-          <SignOutButton />
-
-        </div>
-      </div>
-    </header>
+    <div className="flex items-center gap-3">
+      <Avatar>
+        <AvatarImage src={user.image ?? undefined} alt={avatarAlt} />
+        <AvatarFallback className="bg-amber-300">{avatarFallback}</AvatarFallback>
+      </Avatar>
+      <SignOutButton />
+    </div>
   );
 };
 
