@@ -2,8 +2,10 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { getMinimumStockProducts } from "@/src/app/data/produtos-estoque-minimo";
 
 import DashboardHeader from "./components/dashboard-header";
+import DataTable from "./components/data-table";
 
 const DashboardPage = async () => {
   const session = await auth.api.getSession({
@@ -14,7 +16,7 @@ const DashboardPage = async () => {
     redirect("/auth");
   }
 
-  
+  const minimumStockResult = await getMinimumStockProducts();
 
   return (
     <div>
@@ -25,7 +27,7 @@ const DashboardPage = async () => {
           image: session.user.image ?? null,
         }}
       />
-      <h1>Dashboard Page!</h1>
+      <DataTable data={minimumStockResult} />
     </div>
   );
 };

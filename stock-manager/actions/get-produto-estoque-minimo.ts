@@ -1,7 +1,8 @@
-"use server"
+// "use server";
 
-import { protectedActionClient } from "@/lib/action-client"
+// import { getMinimumStockProducts } from "@/app/data/produtos-estoque-minimo";
+// import { protectedActionClient } from "@/lib/action-client";
 
-
-
-export const getMinimumStockProducts = protectedActionClient.action
+// export const getMinimumStockProducts = protectedActionClient.action(
+//   getMinimumStockProducts,
+// );

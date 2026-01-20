@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import SignOutButton from "./sign-out-button";
@@ -26,10 +25,8 @@ const getInitials = (value: string | null) => {
 
 const DashboardHeader = ({ user }: DashboardHeaderProps) => {
 
-
   const avatarAlt = user.name ?? user.email ?? "User avatar";
   const avatarFallback = getInitials(user.name ?? user.email);
-
 
 
   return (
