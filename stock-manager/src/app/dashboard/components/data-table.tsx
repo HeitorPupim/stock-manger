@@ -36,12 +36,79 @@ const filterPresets: FilterPreset[] = [
 const getRowKey = (row: MinimumStockRow, index: number) =>
   row.idProduto ?? row.skuProduto ?? `row-${index}`;
 
-const DataTable = ({ data }: { data: MinimumStockRow[] }) => {
+const DataTable = ({ data: initialData }: { data: MinimumStockRow[] }) => {
   const [activeFilter, setActiveFilter] = React.useState<FilterPreset["id"]>(
     "all"
   );
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>([]);
+  const [data, setData] = React.useState<MinimumStockRow[]>(initialData);
+  const [lastUpdatedAt, setLastUpdatedAt] = React.useState<Date | null>(
+    initialData.length ? new Date() : null
+  );
+  const [refreshError, setRefreshError] = React.useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  React.useEffect(() => {
+    setData(initialData);
+    if (!lastUpdatedAt && initialData.length) {
+      setLastUpdatedAt(new Date());
+    }
+  }, [initialData, lastUpdatedAt]);
+
+  const fetchData = React.useCallback(async () => {
+    setIsRefreshing(true);
+    setRefreshError(null);
+    try {
+      const response = await fetch("/api/produtos-estoque-minimo", {
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+      const payload = (await response.json()) as { data?: MinimumStockRow[] };
+      setData(payload.data ?? []);
+      setLastUpdatedAt(new Date());
+    } catch (error) {
+      console.error("Failed to refresh table data", error);
+      setRefreshError("Falha ao atualizar.");
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    const start = () => {
+      fetchData();
+      intervalId = setInterval(fetchData, 300_000);
+    };
+
+    const stop = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      stop();
+      if (document.visibilityState === "visible") {
+        start();
+      }
+    };
+
+    if (document.visibilityState === "visible") {
+      start();
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [fetchData]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -56,6 +123,9 @@ const DataTable = ({ data }: { data: MinimumStockRow[] }) => {
   });
 
   const filteredCount = table.getFilteredRowModel().rows.length;
+  const lastUpdatedLabel = lastUpdatedAt
+    ? lastUpdatedAt.toLocaleTimeString("pt-BR")
+    : "Nunca";
 
   const handleFilterChange = (preset: FilterPreset) => {
     setActiveFilter(preset.id);
@@ -77,9 +147,15 @@ const DataTable = ({ data }: { data: MinimumStockRow[] }) => {
             Filtro por tipo de produto usando o menu abaixo.
           </p>
         </div>
-        <span className="text-muted-foreground text-sm">
-          {filteredCount} item(ns)
-        </span>
+        <div className="text-muted-foreground text-sm">
+          <span>{filteredCount} item(ns)</span>
+          <span className="ml-3">
+            {isRefreshing ? "Atualizando..." : `Atualizado em ${lastUpdatedLabel}`}
+          </span>
+          {refreshError ? (
+            <span className="ml-3 text-red-500">{refreshError}</span>
+          ) : null}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
