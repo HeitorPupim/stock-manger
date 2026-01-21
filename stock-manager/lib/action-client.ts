@@ -8,7 +8,6 @@ import {headers} from "next/headers";
 import {auth} from "./auth"
 
 
-
 // Criando uma protected action client 
 export const protectedActionClient = actionClient.use( async ({next}) => {
   

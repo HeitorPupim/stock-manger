@@ -99,3 +99,14 @@ export const accountRelations = relations(account, ({ one }) => ({
   }),
 }));
 // ----------------------------------------------------------------------------------------------------------------------------
+
+export const catalogProduct = pgTable("catalog_product", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  sku: text("sku").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .$onUpdate(() => new Date())
+    .notNull(),
+});

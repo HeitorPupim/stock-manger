@@ -1,0 +1,2 @@
+-- Placeholder migration created because the original 0001 SQL file was missing.
+-- Assumes prior schema changes were already applied to the database.
