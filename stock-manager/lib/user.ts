@@ -1,12 +1,12 @@
 export type UserSummary = {
-  name: string | null;
-  email: string | null;
+  name: string;
+  email: string;
   image: string | null;
 };
 
 type UserLike = {
-  name?: string | null;
-  email?: string | null;
+  name?: string;
+  email?: string;
   image?: string | null | undefined;
 };
 
@@ -16,8 +16,8 @@ export const toUserSummary = (user?: UserLike | null): UserSummary | null => {
   }
 
   return {
-    name: user.name ?? null,
-    email: user.email ?? null,
+    name: user.name ?? "",
+    email: user.email ?? "",
     image: user.image ?? null,
   };
 };

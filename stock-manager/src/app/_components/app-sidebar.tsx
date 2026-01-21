@@ -3,12 +3,14 @@
 import { LayoutDashboard, Package } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -19,6 +21,11 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { UserSummary } from "@/lib/user";
+import { getInitials } from "@/lib/utils";
+
+import SignOutButton from "../(protected)/dashboard/_components/log-out-button";
+import { NavUser } from "./nav-user";
 
 type NavItem = {
   title: string;
@@ -39,13 +46,21 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  user,
+  ...props
+}: ComponentProps<typeof Sidebar> & { user: UserSummary | null }) {
   const { state } = useSidebar();
   const pathname = usePathname();
 
+
+  if (!user) {
+    redirect("/auth");
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="border-b">
         <div className="flex items-center gap-2 px-2 py-1.5">
           <Image
             src="/logo.svg"
@@ -54,9 +69,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             height={state === "collapsed" ? 24 : 32}
             priority
           />
-          <span
-            className="text-sm font-semibold group-data-[collapsible=icon]:hidden"
-          >
+          <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">
             CasaDasRedes
           </span>
         </div>
@@ -90,6 +103,21 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarRail />
+      <SidebarFooter className="border-t p-3">
+        <NavUser user={user}/>
+        {/* <div className="flex items-center justify-between gap-2 ">
+          <Avatar>
+            <AvatarImage
+              src={user?.image ?? undefined}
+              alt={user?.name ?? "User avatar"}
+            />
+            <AvatarFallback className="bg-accent border-accent-foreground border">
+              {getInitials(user?.name ?? "User")}
+            </AvatarFallback>
+          </Avatar>
+          <SignOutButton />
+        </div> */}
+      </SidebarFooter>
     </Sidebar>
   );
 }

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
-const SignOutButton = () => {
+const LogOutButton = () => {
   const router = useRouter();
 
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -37,9 +37,9 @@ const SignOutButton = () => {
       size="sm"
       disabled={isSigningOut}
     >
-      Sair <LogOutIcon />
+      Sair <LogOutIcon className="text-bg" />
     </Button>
   );
 };
 
-export default SignOutButton;
+export default LogOutButton;

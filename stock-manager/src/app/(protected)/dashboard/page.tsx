@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getMinimumStockProducts } from "@/src/app/data/produtos-estoque-minimo";
 
-import DataTable from "./components/data-table";
+import DataTable from "./_components/data-table";
 
 const DashboardPage = async () => {
   const session = await auth.api.getSession({
@@ -19,7 +19,6 @@ const DashboardPage = async () => {
 
   return (
     <div>
-      
       <DataTable data={minimumStockResult} />
     </div>
   );
