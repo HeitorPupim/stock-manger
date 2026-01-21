@@ -8,15 +8,15 @@ import { db } from "@/src/db";
 import { catalogProduct } from "@/src/db/schema";
 
 const skuSchema = z.object({
-  sku: z.string().trim().min(3, { message: "SKU must be at least 3 characters" }),
+  sku: z.string().trim().min(3, { message: "SKU deve ter pelo menos 3 caracteres." }),
 });
 
 const updateSkuSchema = skuSchema.extend({
-  id: z.string().min(1, { message: "Invalid SKU id" }),
+  id: z.string().min(1, { message: "SKU inválido." }),
 });
 
 const deleteSkuSchema = z.object({
-  id: z.string().min(1, { message: "Invalid SKU id" }),
+  id: z.string().min(1, { message: "SKU inválido." }),
 });
 
 export const addSku = protectedActionClient
