@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { columns, type MinimumStockRow } from "./columns";
+import { createColumns, type MinimumStockRow } from "./columns";
 
 type FilterPreset = {
   id: "all" | "rede" | "pano";
@@ -36,25 +36,45 @@ const filterPresets: FilterPreset[] = [
 const getRowKey = (row: MinimumStockRow, index: number) =>
   row.idProduto ?? row.skuProduto ?? `row-${index}`;
 
-const DataTable = ({ data: initialData }: { data: MinimumStockRow[] }) => {
+const DataTable = ({
+  data: initialData,
+  catalogSkus,
+}: {
+  data: MinimumStockRow[];
+  catalogSkus: string[];
+}) => {
   const [activeFilter, setActiveFilter] = React.useState<FilterPreset["id"]>(
     "all"
   );
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>([]);
   const [data, setData] = React.useState<MinimumStockRow[]>(initialData);
-  const [lastUpdatedAt, setLastUpdatedAt] = React.useState<Date | null>(
-    initialData.length ? new Date() : null
-  );
+  const [lastUpdatedAt, setLastUpdatedAt] = React.useState<Date | null>(null);
   const [refreshError, setRefreshError] = React.useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const catalogSkuSet = React.useMemo(
+    () =>
+      new Set(
+        catalogSkus
+          .map((sku) => sku.trim().toLowerCase())
+          .filter((sku) => sku.length)
+      ),
+    [catalogSkus]
+  );
+  const columns = React.useMemo(
+    () => createColumns(catalogSkuSet),
+    [catalogSkuSet]
+  );
 
   React.useEffect(() => {
     setData(initialData);
-    if (!lastUpdatedAt && initialData.length) {
+  }, [initialData]);
+
+  React.useEffect(() => {
+    if (initialData.length) {
       setLastUpdatedAt(new Date());
     }
-  }, [initialData, lastUpdatedAt]);
+  }, [initialData.length]);
 
   const fetchData = React.useCallback(async () => {
     setIsRefreshing(true);
@@ -125,7 +145,7 @@ const DataTable = ({ data: initialData }: { data: MinimumStockRow[] }) => {
   const filteredCount = table.getFilteredRowModel().rows.length;
   const lastUpdatedLabel = lastUpdatedAt
     ? lastUpdatedAt.toLocaleTimeString("pt-BR")
-    : "Nunca";
+    : "--:--";
 
   const handleFilterChange = (preset: FilterPreset) => {
     setActiveFilter(preset.id);

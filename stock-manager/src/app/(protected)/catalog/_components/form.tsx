@@ -38,11 +38,12 @@ const ItemInput = () => {
 
   const { execute, isExecuting } = useAction(addSku, {
     onSuccess: () => {
-      toast.success("SKU added successfully");
+      toast.success("SKU adicionado com sucesso");
       form.reset();
       router.refresh();
     },
     onError: ({ error }) => {
+      console.log(error);
       toast.error(error.serverError || "Failed to add SKU");
     },
   });
@@ -70,7 +71,7 @@ const ItemInput = () => {
           )}
         />
         <Button type="submit" disabled={isExecuting}>
-          {isExecuting ? <Loader2 className="animate-spin" /> : "Add"}
+          {isExecuting ? <Loader2 className="animate-spin" /> : "Adicionar"}
         </Button>
       </form>
     </Form>
