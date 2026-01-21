@@ -1,16 +1,23 @@
+"use client"
 
-
-import { ArrowUpIcon } from "lucide-react";
+import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
+
+const handleClick = () => {
+  redirect("/dashboard")
+}
+
+
 export default function Home() {
+
   return (
-    <div className="flex flex-wrap items-center gap-2 md:flex-row">
-      <Button variant="outline">Home Page</Button>
-      <Button variant="outline" size="icon" aria-label="Submit">
+    <div className="flex items-center h-screen justify-center">
+      <Button variant="outline" onClick={handleClick}>Acessar painel administrativo</Button>
+      {/* <Button variant="outline" size="icon" aria-label="Submit">
         <ArrowUpIcon />
-      </Button>
+      </Button> */}
     </div>
   );
 }

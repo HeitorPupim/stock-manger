@@ -36,6 +36,7 @@ export const createColumns = (
     cell: ({ row }) => {
       const sku = row.original.skuProduto?.trim().toLowerCase() ?? "";
       const isCatalog = sku ? catalogSkuSet.has(sku) : false;
+  
 
       return (
         <div className="flex items-center gap-2">

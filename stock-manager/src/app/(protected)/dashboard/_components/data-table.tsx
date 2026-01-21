@@ -223,11 +223,19 @@ const DataTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              table.getRowModel().rows.map((row, index) => (
-                <TableRow
-                  key={getRowKey(row.original, index)}
-                  className="odd:bg-muted/20"
-                >
+              table.getRowModel().rows.map((row, index) => {
+                const sku = row.original.skuProduto ?? "";
+                const isGrayRow = sku.toLowerCase().endsWith("ee");
+
+                return (
+                  <TableRow
+                    key={getRowKey(row.original, index)}
+                    className={
+                      isGrayRow
+                        ? "bg-muted-foreground/20 "
+                        : "odd:bg-muted/20"
+                    }
+                  >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -236,8 +244,9 @@ const DataTable = ({
                       )}
                     </TableCell>
                   ))}
-                </TableRow>
-              ))
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
