@@ -1,5 +1,5 @@
-import { getSalesRankingLast30Days } from "@/src/app/data/saida-produto-diario";
 import { getSkus } from "@/src/app/data/catalog-queries";
+import { getSalesRankingLast30Days } from "@/src/app/data/saida-produto-diario";
 
 import SalesRankingTable from "./_components/sales-ranking-table";
 

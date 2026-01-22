@@ -114,7 +114,7 @@ const SalesRankingTable = ({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="bg-chart-6/75"
+                    className="bg-foreground/10"
                   >
                     {header.isPlaceholder
                       ? null

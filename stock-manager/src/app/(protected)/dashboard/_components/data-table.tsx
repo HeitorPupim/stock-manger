@@ -376,7 +376,7 @@ const DataTable = ({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="bg-chart-2/75"
+                    className="bg-foreground/10"
                   >
                     {header.isPlaceholder
                       ? null
