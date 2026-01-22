@@ -38,15 +38,15 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
+    title: "Mais vendidos",
+    href: "/sales-ranking",
+    icon: Flame,
+  },
+  {
     title: "Catalogo",
     href: "/catalog",
     icon: Package,
   },
-  {
-    title: "Mais vendidos",
-    href: "/sales-ranking",
-    icon: Flame,
-  }
 ];
 
 export function AppSidebar({

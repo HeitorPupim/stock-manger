@@ -115,18 +115,28 @@ const SalesRankingTable = ({ data }: { data: SalesRankingRow[] }) => {
                 </TableCell>
               </TableRow>
             ) : (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const sku = row.original.skuProduto ?? "";
+                const isGrayRow = sku.toLowerCase().endsWith("ee");
+
+                return (
+                  <TableRow
+                    key={row.id}
+                    className={
+                      isGrayRow ? "bg-muted-foreground/20" : "odd:bg-muted/20"
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
