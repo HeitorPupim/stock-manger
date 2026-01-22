@@ -1,5 +1,5 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { Star } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 
 export type MinimumStockRow = {
   idProduto: string | null;
@@ -19,7 +19,8 @@ const formatValue = (value: string | number | null) => {
 };
 
 export const createColumns = (
-  catalogSkuSet: Set<string>
+  catalogSkuSet: Set<string>,
+  getSalesRank?: (row: MinimumStockRow) => number | null
 ): ColumnDef<MinimumStockRow>[] => [
   {
     accessorKey: "skuProduto",
@@ -36,6 +37,8 @@ export const createColumns = (
     cell: ({ row }) => {
       const sku = row.original.skuProduto?.trim().toLowerCase() ?? "";
       const isCatalog = sku ? catalogSkuSet.has(sku) : false;
+      const salesRank = getSalesRank?.(row.original);
+      const isTopSeller = salesRank !== null && salesRank !== undefined;
   
 
       return (
@@ -47,6 +50,12 @@ export const createColumns = (
             <span className="inline-flex items-center gap-1 rounded-full bg-amber-300 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-900">
               <Star className="h-3 w-3" />
               Catalogo
+            </span>
+          ) : null}
+          {isTopSeller ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-50">
+              <Flame className="h-3 w-3" />
+              {` ${salesRank + 1}`}
             </span>
           ) : null}
         </div>
@@ -70,20 +79,20 @@ export const createColumns = (
     ),
   },
   {
-    accessorKey: "produtoSaldo",
-    header: () => <div className="w-full text-right">Saldo</div>,
-    cell: ({ row }) => (
-      <div className="text-right tabular-nums">
-        {formatValue(row.original.produtoSaldo)}
-      </div>
-    ),
-  },
-  {
     accessorKey: "estoqueAtual",
     header: () => <div className="w-full text-right">Estoque atual</div>,
     cell: ({ row }) => (
       <div className="text-right tabular-nums">
         {formatValue(row.original.estoqueAtual)}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "produtoSaldo",
+    header: () => <div className="w-full text-right">Saldo</div>,
+    cell: ({ row }) => (
+      <div className="text-right tabular-nums">
+        {formatValue(row.original.produtoSaldo)}
       </div>
     ),
   },

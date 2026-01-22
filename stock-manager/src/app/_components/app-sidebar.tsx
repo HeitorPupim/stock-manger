@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Package } from "lucide-react";
+import { Flame, LayoutDashboard, Package } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
@@ -42,6 +42,11 @@ const navItems: NavItem[] = [
     href: "/catalog",
     icon: Package,
   },
+  {
+    title: "Mais vendidos",
+    href: "/sales-ranking",
+    icon: Flame,
+  }
 ];
 
 export function AppSidebar({

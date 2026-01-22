@@ -1,3 +1,4 @@
+import { Page } from "@/components/ui/page";
 import { getSkus } from "@/src/app/data/catalog-queries";
 
 import ItemInput from "./_components/form";
@@ -8,7 +9,7 @@ const CatalogPage = async () => {
   const skus = await getSkus();
 
   return (
-    <div className="space-y-6 p-6">
+    <Page>
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
           Catálogo
@@ -21,7 +22,7 @@ const CatalogPage = async () => {
       </div>
 
       <SkuList skus={skus} />
-    </div>
+    </Page>
   );
 };
 
