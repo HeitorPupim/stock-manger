@@ -20,7 +20,8 @@ const formatValue = (value: string | number | null) => {
 
 export const createColumns = (
   catalogSkuSet: Set<string>,
-  getSalesRank?: (row: MinimumStockRow) => number | null
+  getSalesRank?: (row: MinimumStockRow) => number | null,
+  getSalesTotal?: (row: MinimumStockRow) => string | number | null
 ): ColumnDef<MinimumStockRow>[] => [
   {
     accessorKey: "skuProduto",
@@ -55,7 +56,7 @@ export const createColumns = (
           {isTopSeller ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-orange-500 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-50">
               <Flame className="h-3 w-3" />
-              {` ${salesRank + 1}`}
+              {`${salesRank + 1}`}
             </span>
           ) : null}
         </div>
@@ -80,7 +81,7 @@ export const createColumns = (
   },
   {
     accessorKey: "estoqueAtual",
-    header: () => <div className="w-full text-right">Estoque atual</div>,
+    header: () => <div className="w-full text-right">Estoque Disponível</div>,
     cell: ({ row }) => (
       <div className="text-right tabular-nums">
         {formatValue(row.original.estoqueAtual)}
@@ -88,14 +89,23 @@ export const createColumns = (
     ),
   },
   {
-    accessorKey: "produtoSaldo",
-    header: () => <div className="w-full text-right">Saldo</div>,
+    id: "vendas30d",
+    header: () => <div className="w-full text-right">Qtd vendida (30d)</div>,
     cell: ({ row }) => (
       <div className="text-right tabular-nums">
-        {formatValue(row.original.produtoSaldo)}
+        {formatValue(getSalesTotal?.(row.original) ?? null)}
       </div>
     ),
   },
+  // {
+  //   accessorKey: "produtoSaldo",
+  //   header: () => <div className="w-full text-right">Saldo</div>,
+  //   cell: ({ row }) => (
+  //     <div className="text-right tabular-nums">
+  //       {formatValue(row.original.produtoSaldo)}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "dataSaida",
     header: "Data saida",

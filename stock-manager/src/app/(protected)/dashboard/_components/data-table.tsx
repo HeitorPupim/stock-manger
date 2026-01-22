@@ -46,16 +46,23 @@ const getRowKey = (row: MinimumStockRow, index: number) =>
 const normalizeText = (value: string | number | null) =>
   value === null || value === undefined ? "" : String(value).trim().toLowerCase();
 
+const getSkuKey = (value: string | number | null) => {
+  const normalized = normalizeText(value);
+  return normalized ? `sku:${normalized}` : "";
+};
+
+const getNameKey = (value: string | number | null) => {
+  const normalized = normalizeText(value);
+  return normalized ? `nome:${normalized}` : "";
+};
+
 const getRankingKey = (sku: string | null, name: string | null) => {
-  const normalizedSku = normalizeText(sku);
-  if (normalizedSku) {
-    return `sku:${normalizedSku}`;
+  const skuKey = getSkuKey(sku);
+  if (skuKey) {
+    return skuKey;
   }
-  const normalizedName = normalizeText(name);
-  if (normalizedName) {
-    return `nome:${normalizedName}`;
-  }
-  return "";
+  const nameKey = getNameKey(name);
+  return nameKey;
 };
 
 const buildRankingMap = (
@@ -88,6 +95,41 @@ const buildRankingMap = (
   }
 
   return map;
+};
+
+const buildSalesTotalMap = (salesRanking: SalesRankingRow[]) => {
+  const map = new Map<string, string | number | null>();
+
+  for (const row of salesRanking) {
+    const total = row.totalVendido ?? null;
+    const skuKey = getSkuKey(row.skuProduto);
+    const nameKey = getNameKey(row.nomeProduto);
+
+    if (skuKey && !map.has(skuKey)) {
+      map.set(skuKey, total);
+    }
+    if (nameKey && !map.has(nameKey)) {
+      map.set(nameKey, total);
+    }
+  }
+
+  return map;
+};
+
+const toNumber = (value: string | number | null) => {
+  if (value === null || value === undefined || value === "") {
+    return Number.POSITIVE_INFINITY;
+  }
+  const numericValue = Number(value);
+  return Number.isNaN(numericValue) ? Number.POSITIVE_INFINITY : numericValue;
+};
+
+const toNumberOrNull = (value: string | number | null) => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+  const numericValue = Number(value);
+  return Number.isNaN(numericValue) ? null : numericValue;
 };
 
 const DataTable = ({
@@ -124,25 +166,50 @@ const DataTable = ({
     }),
     [salesRanking]
   );
+  const salesTotalsMap = React.useMemo(
+    () => buildSalesTotalMap(salesRanking),
+    [salesRanking]
+  );
   const getSalesRank = React.useCallback(
     (row: MinimumStockRow) => {
-      const key = getRankingKey(row.skuProduto, row.nomeProduto);
-      if (!key) {
+      const skuKey = getSkuKey(row.skuProduto);
+      const nameKey = getNameKey(row.nomeProduto);
+      const getRank = (map: Map<string, number>) => {
+        if (skuKey && map.has(skuKey)) {
+          return map.get(skuKey) ?? null;
+        }
+        if (nameKey && map.has(nameKey)) {
+          return map.get(nameKey) ?? null;
+        }
         return null;
-      }
+      };
       if (activeFilter === "rede") {
-        return rankingMaps.rede.get(key) ?? null;
+        return getRank(rankingMaps.rede);
       }
       if (activeFilter === "pano") {
-        return rankingMaps.pano.get(key) ?? null;
+        return getRank(rankingMaps.pano);
       }
-      return rankingMaps.rede.get(key) ?? rankingMaps.pano.get(key) ?? null;
+      return getRank(rankingMaps.rede) ?? getRank(rankingMaps.pano);
     },
     [activeFilter, rankingMaps]
   );
+  const getSalesTotal = React.useCallback(
+    (row: MinimumStockRow) => {
+      const skuKey = getSkuKey(row.skuProduto);
+      if (skuKey && salesTotalsMap.has(skuKey)) {
+        return salesTotalsMap.get(skuKey) ?? null;
+      }
+      const nameKey = getNameKey(row.nomeProduto);
+      if (nameKey && salesTotalsMap.has(nameKey)) {
+        return salesTotalsMap.get(nameKey) ?? null;
+      }
+      return null;
+    },
+    [salesTotalsMap]
+  );
   const columns = React.useMemo(
-    () => createColumns(catalogSkuSet, getSalesRank),
-    [catalogSkuSet, getSalesRank]
+    () => createColumns(catalogSkuSet, getSalesRank, getSalesTotal),
+    [catalogSkuSet, getSalesRank, getSalesTotal]
   );
 
   React.useEffect(() => {
@@ -156,39 +223,35 @@ const DataTable = ({
   }, [initialData.length]);
 
   const sortedData = React.useMemo(() => {
-    if (activeFilter !== "rede" && activeFilter !== "pano") {
-      return data;
-    }
-    const rankingMap = rankingMaps[activeFilter];
-    if (!rankingMap || rankingMap.size === 0) {
-      return data;
-    }
-
     return data
       .map((row, index) => ({ row, index }))
       .sort((a, b) => {
-        const aRank = rankingMap.get(
-          getRankingKey(a.row.skuProduto, a.row.nomeProduto)
-        );
-        const bRank = rankingMap.get(
-          getRankingKey(b.row.skuProduto, b.row.nomeProduto)
-        );
-        const aHasRank = aRank !== undefined;
-        const bHasRank = bRank !== undefined;
+        const aValue = toNumber(a.row.estoqueAtual);
+        const bValue = toNumber(b.row.estoqueAtual);
 
-        if (aHasRank && bHasRank) {
-          return aRank - bRank;
+        if (aValue !== bValue) {
+          return aValue - bValue;
         }
-        if (aHasRank) {
-          return -1;
+
+        if (activeFilter === "rede") {
+          const aSales = toNumberOrNull(getSalesTotal(a.row));
+          const bSales = toNumberOrNull(getSalesTotal(b.row));
+
+          if (aSales !== null && bSales !== null && aSales !== bSales) {
+            return bSales - aSales;
+          }
+          if (aSales !== null && bSales === null) {
+            return -1;
+          }
+          if (aSales === null && bSales !== null) {
+            return 1;
+          }
         }
-        if (bHasRank) {
-          return 1;
-        }
+
         return a.index - b.index;
       })
       .map((item) => item.row);
-  }, [activeFilter, data, rankingMaps]);
+  }, [activeFilter, data, getSalesTotal]);
 
   const fetchData = React.useCallback(async () => {
     setIsRefreshing(true);

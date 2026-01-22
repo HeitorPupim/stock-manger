@@ -31,7 +31,7 @@ type FilterPreset = {
 const filterPresets: FilterPreset[] = [
   { id: "all", label: "Todos", value: null },
   { id: "rede", label: "Rede de Pesca", value: "rede" },
-  { id: "panagem", label: "Panagem", value: "panagem" },
+  { id: "panagem", label: "Panagem", value: "pano" },
 ];
 
 const SalesRankingTable = ({ data }: { data: SalesRankingRow[] }) => {

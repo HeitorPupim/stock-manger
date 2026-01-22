@@ -1,4 +1,4 @@
-import { asc, desc } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 
 import { readonlyDb } from "@/src/db/readonly";
 import { produtoEmEstoqueMinimo } from "@/src/db/views-schema";
