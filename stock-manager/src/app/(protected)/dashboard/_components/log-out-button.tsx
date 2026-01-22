@@ -21,7 +21,7 @@ const LogOutButton = () => {
             router.push("/auth");
           },
           onError: (error) => {
-            console.error("Failed to sign out", error);
+            console.error("Failed to sign out!", error);
           },
         },
       });
