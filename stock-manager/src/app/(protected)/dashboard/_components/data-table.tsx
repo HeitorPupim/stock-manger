@@ -366,14 +366,18 @@ const DataTable = ({
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="rounded-lg border bg-card">
         
-        <Table>
-          <TableHeader>
+        <Table containerClassName="max-h-[88vh] overflow-auto">
+          <TableHeader className="sticky top-0 z-10 bg-card">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="bg-chart-2/75"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(

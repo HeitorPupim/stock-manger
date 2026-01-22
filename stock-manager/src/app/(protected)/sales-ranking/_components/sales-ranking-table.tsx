@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import type { SalesRankingRow } from "@/src/app/data/saida-produto-diario";
 
-import { salesRankingColumns } from "./sales-ranking-columns";
+import { createSalesRankingColumns } from "./sales-ranking-columns";
 
 type FilterPreset = {
   id: "all" | "rede" | "panagem";
@@ -34,15 +34,34 @@ const filterPresets: FilterPreset[] = [
   { id: "panagem", label: "Panagem", value: "pano" },
 ];
 
-const SalesRankingTable = ({ data }: { data: SalesRankingRow[] }) => {
+const SalesRankingTable = ({
+  data,
+  catalogSkus,
+}: {
+  data: SalesRankingRow[];
+  catalogSkus: string[];
+}) => {
   const [activeFilter, setActiveFilter] = React.useState<FilterPreset["id"]>(
     "all"
   );
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>([]);
+  const catalogSkuSet = React.useMemo(
+    () =>
+      new Set(
+        catalogSkus
+          .map((sku) => sku.trim().toLowerCase())
+          .filter((sku) => sku.length)
+      ),
+    [catalogSkus]
+  );
+  const columns = React.useMemo(
+    () => createSalesRankingColumns(catalogSkuSet),
+    [catalogSkuSet]
+  );
   const table = useReactTable({
     data,
-    columns: salesRankingColumns,
+    columns,
     state: {
       columnFilters,
     },
@@ -86,13 +105,17 @@ const SalesRankingTable = ({ data }: { data: SalesRankingRow[] }) => {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-card">
-        <Table>
-          <TableHeader>
+      <div className="rounded-lg border bg-card">
+        <Table containerClassName="max-h-[88vh] overflow-auto">
+          <TableHeader className="sticky top-0 z-10 bg-card">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="bg-chart-6/75"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -108,7 +131,7 @@ const SalesRankingTable = ({ data }: { data: SalesRankingRow[] }) => {
             {table.getRowModel().rows.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={salesRankingColumns.length}
+                  colSpan={columns.length}
                   className="text-muted-foreground py-10 text-center"
                 >
                   Nenhuma venda encontrada.

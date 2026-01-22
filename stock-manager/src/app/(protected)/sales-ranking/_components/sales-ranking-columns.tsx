@@ -1,4 +1,5 @@
 import { type ColumnDef } from "@tanstack/react-table";
+import { Star } from "lucide-react";
 
 import type { SalesRankingRow } from "@/src/app/data/saida-produto-diario";
 
@@ -9,7 +10,9 @@ const formatValue = (value: string | number | null) => {
   return String(value);
 };
 
-export const salesRankingColumns: ColumnDef<SalesRankingRow>[] = [
+export const createSalesRankingColumns = (
+  catalogSkuSet: Set<string>
+): ColumnDef<SalesRankingRow>[] => [
   {
     id: "rank",
     header: "#",
@@ -29,11 +32,24 @@ export const salesRankingColumns: ColumnDef<SalesRankingRow>[] = [
   {
     accessorKey: "nomeProduto",
     header: "Produto",
-    cell: ({ row }) => (
-      <span className="font-medium">
-        {formatValue(row.original.nomeProduto)}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const sku = row.original.skuProduto?.trim().toLowerCase() ?? "";
+      const isCatalog = sku ? catalogSkuSet.has(sku) : false;
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">
+            {formatValue(row.original.nomeProduto)}
+          </span>
+          {isCatalog ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-300 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-900">
+              <Star className="h-3 w-3" />
+              Catalogo
+            </span>
+          ) : null}
+        </div>
+      );
+    },
     filterFn: (row, id, value) => {
       const raw = row.getValue(id);
       if (typeof raw !== "string") {
