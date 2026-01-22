@@ -46,7 +46,7 @@ export const salesRankingColumns: ColumnDef<SalesRankingRow>[] = [
     accessorKey: "totalVendido",
     header: () => <div className="w-full text-right">Qtd vendida (30d)</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">
+      <div className="text-center tabular-nums">
         {formatValue(row.original.totalVendido)}
       </div>
     ),

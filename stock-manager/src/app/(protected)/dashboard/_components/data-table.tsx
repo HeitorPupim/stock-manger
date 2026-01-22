@@ -233,7 +233,7 @@ const DataTable = ({
           return aValue - bValue;
         }
 
-        if (activeFilter === "rede") {
+        if (activeFilter === "rede" || activeFilter === "pano") {
           const aSales = toNumberOrNull(getSalesTotal(a.row));
           const bSales = toNumberOrNull(getSalesTotal(b.row));
 

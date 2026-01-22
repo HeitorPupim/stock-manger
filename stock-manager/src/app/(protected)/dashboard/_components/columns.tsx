@@ -74,7 +74,7 @@ export const createColumns = (
     accessorKey: "estoqueMinimo",
     header: () => <div className="w-full text-right">Estoque minimo</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">
+      <div className="text-center tabular-nums">
         {formatValue(row.original.estoqueMinimo)}
       </div>
     ),
@@ -83,7 +83,7 @@ export const createColumns = (
     accessorKey: "estoqueAtual",
     header: () => <div className="w-full text-right">Estoque Disponível</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">
+      <div className="text-center tabular-nums">
         {formatValue(row.original.estoqueAtual)}
       </div>
     ),
@@ -92,7 +92,7 @@ export const createColumns = (
     id: "vendas30d",
     header: () => <div className="w-full text-right">Qtd vendida (30d)</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">
+      <div className="text-center tabular-nums">
         {formatValue(getSalesTotal?.(row.original) ?? null)}
       </div>
     ),
