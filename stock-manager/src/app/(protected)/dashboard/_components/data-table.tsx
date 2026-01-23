@@ -18,27 +18,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  getTableFilterRules,
+  type TableFilterPreset,
+  type TableFilterPresetId,
+  tableFilterPresets,
+} from "@/lib/table-filter";
 import type { SalesRankingRow } from "@/src/app/data/saida-produto-diario";
 
 import { createColumns, type MinimumStockRow } from "./columns";
-
-type FilterPreset = {
-  id: "all" | "rede" | "pano";
-  label: string;
-  value: string | null;
-};
-
-const filterPresets: FilterPreset[] = [
-  { id: "all", label: "Todos", value: null },
-  { id: "rede", label: "Rede de Pesca", value: "rede" },
-  { id: "pano", label: "Panagem", value: "pano" },
-];
-
-const filterRules: Record<FilterPreset["id"], ColumnFiltersState> = {
-  all: [],
-  rede: [{ id: "nomeProduto", value: "rede" }],
-  pano: [{ id: "nomeProduto", value: "pano" }],
-};
 
 const getRowKey = (row: MinimumStockRow, index: number) =>
   row.idProduto ?? row.skuProduto ?? `row-${index}`;
@@ -141,7 +129,7 @@ const DataTable = ({
   catalogSkus: string[];
   salesRanking: SalesRankingRow[];
 }) => {
-  const [activeFilter, setActiveFilter] = React.useState<FilterPreset["id"]>(
+  const [activeFilter, setActiveFilter] = React.useState<TableFilterPresetId>(
     "all"
   );
   const [columnFilters, setColumnFilters] =
@@ -324,9 +312,9 @@ const DataTable = ({
     ? lastUpdatedAt.toLocaleTimeString("pt-BR")
     : "--:--";
 
-  const handleFilterChange = (preset: FilterPreset) => {
+  const handleFilterChange = (preset: TableFilterPreset) => {
     setActiveFilter(preset.id);
-    setColumnFilters(filterRules[preset.id]);
+    setColumnFilters(getTableFilterRules(preset.id));
   };
 
   return (
@@ -352,7 +340,7 @@ const DataTable = ({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {filterPresets.map((preset) => (
+        {tableFilterPresets.map((preset) => (
           <Button
             key={preset.id}
             type="button"

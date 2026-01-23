@@ -18,21 +18,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  getTableFilterRules,
+  type TableFilterPreset,
+  type TableFilterPresetId,
+  tableFilterPresets,
+} from "@/lib/table-filter";
 import type { SalesRankingRow } from "@/src/app/data/saida-produto-diario";
 
 import { createSalesRankingColumns } from "./sales-ranking-columns";
-
-type FilterPreset = {
-  id: "all" | "rede" | "panagem";
-  label: string;
-  value: string | null;
-};
-
-const filterPresets: FilterPreset[] = [
-  { id: "all", label: "Todos", value: null },
-  { id: "rede", label: "Rede de Pesca", value: "rede" },
-  { id: "panagem", label: "Panagem", value: "pano" },
-];
 
 const SalesRankingTable = ({
   data,
@@ -41,7 +35,7 @@ const SalesRankingTable = ({
   data: SalesRankingRow[];
   catalogSkus: string[];
 }) => {
-  const [activeFilter, setActiveFilter] = React.useState<FilterPreset["id"]>(
+  const [activeFilter, setActiveFilter] = React.useState<TableFilterPresetId>(
     "all"
   );
   const [columnFilters, setColumnFilters] =
@@ -70,13 +64,9 @@ const SalesRankingTable = ({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const handleFilterChange = (preset: FilterPreset) => {
+  const handleFilterChange = (preset: TableFilterPreset) => {
     setActiveFilter(preset.id);
-    if (!preset.value) {
-      setColumnFilters([]);
-      return;
-    }
-    setColumnFilters([{ id: "nomeProduto", value: preset.value }]);
+    setColumnFilters(getTableFilterRules(preset.id));
   };
 
   return (
@@ -91,7 +81,7 @@ const SalesRankingTable = ({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {filterPresets.map((preset) => (
+        {tableFilterPresets.map((preset) => (
           <Button
             key={preset.id}
             type="button"

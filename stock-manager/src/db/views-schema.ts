@@ -43,3 +43,9 @@ export const produto = pgTable(
   }
 );
 
+export const saidaMateriaPrimaDiaria = pgView("SaidaMateriaPrimaDiaria", {
+  data : date("data"),
+  skuMateriaPrima : text("sku"),
+  nomeMateriaPrima : text("nome_produto"),
+  qtdSaida : numeric("qtd_vendida"),
+}).existing();
