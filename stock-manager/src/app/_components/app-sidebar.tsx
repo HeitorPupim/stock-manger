@@ -1,6 +1,6 @@
 "use client";
 
-import { Flame, LayoutDashboard, Package } from "lucide-react";
+import { Box, Boxes, Flame, LayoutDashboard, Package, Siren, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
@@ -33,9 +33,14 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    title: "Dashboard",
+    title: "Estoque Minimo",
     href: "/dashboard",
-    icon: LayoutDashboard,
+    icon: Siren,
+  },
+  {
+    title: "Produtos",
+    href: "/products",
+    icon: Box,
   },
   {
     title: "Mais vendidos",
@@ -45,7 +50,7 @@ const navItems: NavItem[] = [
   {
     title: "Catalogo",
     href: "/catalog",
-    icon: Package,
+    icon: Star
   },
 ];
 

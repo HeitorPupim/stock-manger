@@ -21,5 +21,6 @@ export const tableFilterRules: Record<TableFilterPresetId, ColumnFiltersState> =
   pano: [{ id: "nomeProduto", value: "pano" }],
 };
 
+
 export const getTableFilterRules = (presetId: TableFilterPresetId) =>
   tableFilterRules[presetId];

@@ -11,6 +11,13 @@ export type MinimumStockRow = {
   dataSaida: string | null;
 };
 
+export type MinimumStockColumnsFactory = (
+  catalogSkuSet: Set<string>,
+  getSalesRank?: (row: MinimumStockRow) => number | null,
+  getSalesTotal?: (row: MinimumStockRow) => string | number | null,
+  salesIntervalDays?: number
+) => ColumnDef<MinimumStockRow>[];
+
 const formatValue = (value: string | number | null) => {
   if (value === null || value === undefined || value === "") {
     return "-";
@@ -18,10 +25,11 @@ const formatValue = (value: string | number | null) => {
   return String(value);
 };
 
-export const createColumns = (
+export const createColumns: MinimumStockColumnsFactory = (
   catalogSkuSet: Set<string>,
   getSalesRank?: (row: MinimumStockRow) => number | null,
-  getSalesTotal?: (row: MinimumStockRow) => string | number | null
+  getSalesTotal?: (row: MinimumStockRow) => string | number | null,
+  salesIntervalDays: number = 30
 ): ColumnDef<MinimumStockRow>[] => [
   {
     accessorKey: "skuProduto",
@@ -90,7 +98,11 @@ export const createColumns = (
   },
   {
     id: "vendas30d",
-    header: () => <div className="w-full text-right">Qtd vendida (30d)</div>,
+    header: () => (
+      <div className="w-full text-right">
+        {`Qtd vendida (${salesIntervalDays}d)`}
+      </div>
+    ),
     cell: ({ row }) => (
       <div className="text-center tabular-nums">
         {formatValue(getSalesTotal?.(row.original) ?? null)}

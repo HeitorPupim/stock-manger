@@ -26,7 +26,11 @@ import {
 } from "@/lib/table-filter";
 import type { SalesRankingRow } from "@/src/app/data/saida-produto-diario";
 
-import { createColumns, type MinimumStockRow } from "./columns";
+import {
+  createColumns,
+  type MinimumStockColumnsFactory,
+  type MinimumStockRow,
+} from "./columns";
 
 const getRowKey = (row: MinimumStockRow, index: number) =>
   row.idProduto ?? row.skuProduto ?? `row-${index}`;
@@ -124,10 +128,20 @@ const DataTable = ({
   data: initialData,
   catalogSkus,
   salesRanking,
+  extraFilters,
+  title = "Produtos em estoque minimo",
+  description = "Filtro por tipo de produto usando o menu abaixo.",
+  salesIntervalDays = 30,
+  columnsFactory,
 }: {
   data: MinimumStockRow[];
   catalogSkus: string[];
   salesRanking: SalesRankingRow[];
+  extraFilters?: React.ReactNode;
+  title?: string;
+  description?: string;
+  salesIntervalDays?: number;
+  columnsFactory?: MinimumStockColumnsFactory;
 }) => {
   const [activeFilter, setActiveFilter] = React.useState<TableFilterPresetId>(
     "all"
@@ -195,9 +209,22 @@ const DataTable = ({
     },
     [salesTotalsMap]
   );
+  const columnsBuilder = columnsFactory ?? createColumns;
   const columns = React.useMemo(
-    () => createColumns(catalogSkuSet, getSalesRank, getSalesTotal),
-    [catalogSkuSet, getSalesRank, getSalesTotal]
+    () =>
+      columnsBuilder(
+        catalogSkuSet,
+        getSalesRank,
+        getSalesTotal,
+        salesIntervalDays
+      ),
+    [
+      catalogSkuSet,
+      getSalesRank,
+      getSalesTotal,
+      salesIntervalDays,
+      columnsBuilder,
+    ]
   );
 
   React.useEffect(() => {
@@ -322,10 +349,10 @@ const DataTable = ({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-foreground text-lg font-semibold">
-            Produtos em estoque minimo
+            {title}
           </h2>
           <p className="text-muted-foreground text-sm">
-            Filtro por tipo de produto usando o menu abaixo.
+            {description}
           </p>
         </div>
         <div className="text-muted-foreground text-sm">
@@ -352,6 +379,7 @@ const DataTable = ({
             {preset.label}
           </Button>
         ))}
+        {extraFilters}
       </div>
 
       <div className="rounded-lg border bg-card">
