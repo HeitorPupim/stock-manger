@@ -58,6 +58,7 @@ export const getSalesRankingByInterval = async (
       skuProduto: produto.skuProduto,
       nomeProduto: produto.nomeProduto,
       produtoEstoqueMinimo: produtoEstoque.produtoEstoqueMinimo,
+      produtoEstoqueDisponivel: produtoEstoque.produtoSaldoDisponivel,
       totalVendido,
     })
     .from(produto)
@@ -70,7 +71,8 @@ export const getSalesRankingByInterval = async (
       produto.idProduto,
       produto.skuProduto,
       produto.nomeProduto,
-      produtoEstoque.produtoEstoqueMinimo
+      produtoEstoque.produtoEstoqueMinimo,
+      produtoEstoque.produtoSaldoDisponivel
     )
     .orderBy(desc(totalVendido), asc(produtoEstoque.produtoEstoqueMinimo));
 };

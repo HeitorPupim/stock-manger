@@ -61,6 +61,15 @@ export const createProductsColumns = (
       </div>
     ),
   },
+   {
+    accessorKey: "produtoEstoqueDisponivel",
+    header: () => <div className="w-full text-right">Estoque disponível</div>,
+    cell: ({ row }) => (
+      <div className="text-center tabular-nums">
+        {formatValue(row.original.produtoEstoqueDisponivel)}
+      </div>
+    ),
+  },
   {
     accessorKey: "totalVendido",
     header: () => (
