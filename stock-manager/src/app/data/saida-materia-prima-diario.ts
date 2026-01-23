@@ -13,6 +13,7 @@ export type SalesRankingRow = {
   skuProduto: string | null;
   nomeProduto: string | null;
   produtoEstoqueMinimo: string | number | null;
+  produtoEstoqueDisponivel: string | number | null;
   totalVendido: string | number | null;
 };
 
