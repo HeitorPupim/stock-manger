@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Boxes, Flame, LayoutDashboard, Package, Siren, Star } from "lucide-react";
+import { AlertCircle, Box,  Flame, LayoutDashboard,  Siren, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
@@ -31,17 +31,24 @@ type NavItem = {
   icon: typeof LayoutDashboard;
 };
 
-const navItems: NavItem[] = [
+
+
+const navItemsMenu: NavItem[] = [
   {
     title: "Estoque Minimo",
-    href: "/dashboard",
+    href: "/minimum-stock",
     icon: Siren,
   },
-  {
-    title: "Produtos",
-    href: "/products",
-    icon: Box,
-  },
+  // {
+  //   title: "Panos sem venda",
+  //   href: "/stuck-products",
+  //   icon: AlertCircle,
+  // },
+  // {
+  //   title: "Produtos",
+  //   href: "/products",
+  //   icon: Box,
+  // },
   {
     title: "Mais vendidos",
     href: "/sales-ranking",
@@ -52,6 +59,20 @@ const navItems: NavItem[] = [
     href: "/catalog",
     icon: Star
   },
+];
+
+const navItemsMateriaPrima: NavItem[] = [
+  {
+    title: "Produtos",
+    href: "/products",
+    icon: Box,
+  },
+  {
+    title: "Panos sem venda",
+    href: "/stuck-products",
+    icon: AlertCircle,
+  },
+
 ];
 
 export function AppSidebar({
@@ -97,7 +118,7 @@ export function AppSidebar({
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
+              {navItemsMenu.map((item) => {
                 const isActive = pathname.startsWith(item.href);
                 const Icon = item.icon;
 
@@ -119,6 +140,34 @@ export function AppSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Matéria Prima</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItemsMateriaPrima.map((item) => {
+                const isActive = pathname.startsWith(item.href);
+                const Icon = item.icon;
+
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      tooltip={item.title}
+                    >
+                      <Link href={item.href}>
+                        <Icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+
       </SidebarContent>
       <SidebarRail />
       <SidebarFooter className="border-t p-3">

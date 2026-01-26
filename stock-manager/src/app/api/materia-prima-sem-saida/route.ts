@@ -1,18 +1,18 @@
 import { type NextRequest,NextResponse } from "next/server";
 
 import {
-  getRawMaterialIssue,
-  resolveMateriaPrimaIntervalDays,
-} from "@/src/app/data/saida-materia-prima-diario";
+  getStuckProducts,
+  resolveStuckProductsIntervalDays,
+} from "@/src/app/data/materia-prima-sem-saida";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const daysParam = request.nextUrl.searchParams.get("days");
-  const intervalDays = resolveMateriaPrimaIntervalDays(daysParam);
+  const intervalDays = resolveStuckProductsIntervalDays(daysParam);
 
   try {
-    const data = await getRawMaterialIssue(intervalDays);
+    const data = await getStuckProducts(intervalDays);
     return NextResponse.json(
       { data, intervalDays },
       {
@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Failed to load raw material sales ranking", error);
+    console.error("Failed to load stuck products", error);
     return NextResponse.json(
-      { error: "Failed to load raw material sales ranking" },
+      { error: "Failed to load stuck products" },
       { status: 500 }
     );
   }

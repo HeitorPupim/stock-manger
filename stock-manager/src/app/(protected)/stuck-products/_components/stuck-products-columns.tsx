@@ -1,7 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Star } from "lucide-react";
 
-import type { RawMaterialIssueRow } from "@/src/app/data/saida-materia-prima-diario";
+import type { StuckProductRow } from "@/src/app/data/materia-prima-sem-saida";
 
 const formatValue = (value: string | number | null) => {
   if (value === null || value === undefined || value === "") {
@@ -13,7 +13,7 @@ const formatValue = (value: string | number | null) => {
 export const createProductsColumns = (
   catalogSkuSet: Set<string>,
   salesIntervalDays: number = 30
-): ColumnDef<RawMaterialIssueRow>[] => [
+): ColumnDef<StuckProductRow>[] => [
   {
     accessorKey: "skuProduto",
     header: "SKU",

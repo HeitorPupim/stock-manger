@@ -24,9 +24,9 @@ import {
   type TableFilterPresetId,
   tableFilterPresets,
 } from "@/lib/table-filter";
-import type { RawMaterialIssueRow } from "@/src/app/data/saida-materia-prima-diario";
+import type { StuckProductRow } from "@/src/app/data/materia-prima-sem-saida";
 
-import { createProductsColumns } from "./products-columns";
+import { createProductsColumns } from "./stuck-products-columns";
 
 type IntervalPreset = {
   id: string;
@@ -49,7 +49,7 @@ const ProductsTable = ({
   catalogSkus,
   initialIntervalDays = DEFAULT_INTERVAL_DAYS,
 }: {
-  data: RawMaterialIssueRow[];
+  data: StuckProductRow[];
   catalogSkus: string[];
   initialIntervalDays?: number;
 }) => {
@@ -58,8 +58,9 @@ const ProductsTable = ({
   );
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(() => getTableFilterRules("pano"));
-  const [data, setData] = React.useState<RawMaterialIssueRow[]>(initialData);
-  const [intervalDays, setIntervalDays] = React.useState<number>(initialIntervalDays);
+  const [data, setData] = React.useState<StuckProductRow[]>(initialData);
+  const [intervalDays, setIntervalDays] =
+    React.useState<number>(initialIntervalDays);
   const [isIntervalLoading, setIsIntervalLoading] = React.useState(false);
   const [intervalError, setIntervalError] = React.useState<string | null>(null);
   const catalogSkuSet = React.useMemo(
@@ -90,7 +91,7 @@ const ProductsTable = ({
 
     try {
       const response = await fetch(
-        `/api/saida-materia-prima?days=${nextInterval}`,
+        `/api/materia-prima-sem-saida?days=${nextInterval}`,
         {
           cache: "no-store",
         }
@@ -99,7 +100,7 @@ const ProductsTable = ({
         throw new Error(`Request failed: ${response.status}`);
       }
       const payload = (await response.json()) as {
-        data?: RawMaterialIssueRow[];
+        data?: StuckProductRow[];
       };
       setData(payload.data ?? []);
       setIntervalDays(nextInterval);
@@ -134,10 +135,10 @@ const ProductsTable = ({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-foreground text-lg font-semibold">
-            Meus produtos
+            Produtos sem saída
           </h2>
           <p className="text-muted-foreground text-sm">
-            Acompanhe seus produtos e ajuste o intervalo de vendas.
+            Itens sem venda nos últimos {intervalDays} dias.
           </p>
         </div>
         <div className="text-muted-foreground text-sm">
@@ -146,21 +147,26 @@ const ProductsTable = ({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {tableFilterPresets.map((preset) => (
-          <Button
-            key={preset.id}
-            type="button"
-            size="sm"
+        {tableFilterPresets.map((preset) => {
+          if (preset.id === "all" || preset.id === "rede") return null;
+          
+          return (
+            <Button
+              key={preset.id}
+              type="button"
+              size="sm"
             variant={activeFilter === preset.id ? "default" : "outline"}
             onClick={() => handleFilterChange(preset)}
             aria-pressed={activeFilter === preset.id}
           >
             {preset.label}
           </Button>
-        ))}
+        );
+        })}
+
         <div className="flex flex-wrap items-center gap-2 pl-2">
           <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wide">
-            Intervalo
+            Tempo sem saída:
           </span>
           {intervalPresets.map((preset) => (
             <Button

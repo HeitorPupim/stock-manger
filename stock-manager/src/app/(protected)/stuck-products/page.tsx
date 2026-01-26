@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getSkus } from "@/src/app/data/catalog-queries";
 import {
-  DEFAULT_MATERIA_PRIMA_INTERVAL_DAYS,
-  getRawMaterialIssue,
-} from "@/src/app/data/saida-materia-prima-diario";
+  DEFAULT_STUCK_PRODUCTS_INTERVAL_DAYS,
+  getStuckProducts,
+} from "@/src/app/data/materia-prima-sem-saida";
 
-import ProductsTable from "./_components/products-table";
+import StuckProductsTable from "./_components/stuck-products-table";
 
 export const dynamic = "force-dynamic";
 
@@ -22,15 +22,15 @@ const ProductsPage = async () => {
   }
 
   const [salesRanking, catalogSkus] = await Promise.all([
-    getRawMaterialIssue(DEFAULT_MATERIA_PRIMA_INTERVAL_DAYS),
+    getStuckProducts(DEFAULT_STUCK_PRODUCTS_INTERVAL_DAYS),
     getSkus(),
   ]);
 
   return (
-    <ProductsTable
+    <StuckProductsTable
       data={salesRanking}
       catalogSkus={catalogSkus.map((item) => item.sku)}
-      initialIntervalDays={DEFAULT_MATERIA_PRIMA_INTERVAL_DAYS}
+      initialIntervalDays={DEFAULT_STUCK_PRODUCTS_INTERVAL_DAYS}
     />
   );
 };

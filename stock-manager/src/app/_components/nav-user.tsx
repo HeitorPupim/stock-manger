@@ -19,7 +19,7 @@ import {
 import { UserSummary } from "@/lib/user";
 import { getInitials } from "@/lib/utils";
 
-import LogOutButton from "../(protected)/dashboard/_components/log-out-button";
+import LogOutButton from "../(protected)/minimum-stock/_components/log-out-button";
 
 export function NavUser({ user }: { user: UserSummary }) {
   return (
