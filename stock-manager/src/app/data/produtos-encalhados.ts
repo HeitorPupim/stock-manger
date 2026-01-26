@@ -59,5 +59,5 @@ export const getProductFlops = async (
       sql`${ultimaMovimentacao} <= current_date - (${safeIntervalDays} * interval '1 day')
       and ${produtoEstoque.produtoSaldoDisponivel} > 0`
     )
-    .orderBy(desc(ultimaMovimentacao));
+    .orderBy(desc(produtoEstoque.produtoSaldoDisponivel), desc(ultimaMovimentacao));
 };
