@@ -54,13 +54,18 @@ export const getRawMaterialIssue = async (
   const totalVendido = sql<string>`coalesce(sum(${saidaMateriaPrimaInterval.qtdSaida}), 0)`
     .as("total_vendido");
 
+  const produtoEstoqueMinimoValue = sql<string | number | null>`coalesce(${produtoEstoque.produtoEstoqueMinimo}, 0)`
+    .as("produto_estoque_minimo");
+  const produtoEstoqueDisponivelValue = sql<string | number | null>`coalesce(${produtoEstoque.produtoSaldoDisponivel}, 0)`
+    .as("produto_estoque_disponivel");
+
   return readonlyDb
     .select({
       idProduto: produto.idProduto,
       skuProduto: produto.skuProduto,
       nomeProduto: produto.nomeProduto,
-      produtoEstoqueMinimo: produtoEstoque.produtoEstoqueMinimo,
-      produtoEstoqueDisponivel: produtoEstoque.produtoSaldoDisponivel,
+      produtoEstoqueMinimo: produtoEstoqueMinimoValue,
+      produtoEstoqueDisponivel: produtoEstoqueDisponivelValue,
       totalVendido,
     })
     .from(produto)

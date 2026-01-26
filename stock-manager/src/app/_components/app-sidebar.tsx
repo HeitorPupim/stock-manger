@@ -63,12 +63,12 @@ const navItemsMenu: NavItem[] = [
 
 const navItemsMateriaPrima: NavItem[] = [
   {
-    title: "Produtos",
+    title: "Saída de Matéria Prima",
     href: "/products",
     icon: Box,
   },
   {
-    title: "Panos sem venda",
+    title: "Panagem sem venda",
     href: "/stuck-products",
     icon: AlertCircle,
   },
