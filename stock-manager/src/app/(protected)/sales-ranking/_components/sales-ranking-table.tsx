@@ -53,6 +53,7 @@ const SalesRankingTable = ({
     () => createSalesRankingColumns(catalogSkuSet),
     [catalogSkuSet]
   );
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table hook is required here.
   const table = useReactTable({
     data,
     columns,
