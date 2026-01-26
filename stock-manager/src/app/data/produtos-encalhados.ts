@@ -1,4 +1,4 @@
-import {desc, eq, sql} from "drizzle-orm";
+import {asc, eq, sql} from "drizzle-orm";
 import z from "zod";
 
 import {readonlyDb} from "@/src/db/readonly";
@@ -59,5 +59,5 @@ export const getProductFlops = async (
       sql`${ultimaMovimentacao} <= current_date - (${safeIntervalDays} * interval '1 day')
       and ${produtoEstoque.produtoSaldoDisponivel} > 0`
     )
-    .orderBy(desc(produtoEstoque.produtoSaldoDisponivel), desc(ultimaMovimentacao));
+    .orderBy(asc(ultimaMovimentacao));
 };
