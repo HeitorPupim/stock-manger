@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Box,  Flame, LayoutDashboard,  Siren, Star } from "lucide-react";
+import { AlertCircle, Box,  Flame, LayoutDashboard,  OctagonAlert,  Siren, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
@@ -55,6 +55,11 @@ const navItemsMenu: NavItem[] = [
     icon: Flame,
   },
   {
+    title: "Encalhados",
+    href: "/product-flops",
+    icon: OctagonAlert,
+  },
+  {
     title: "Catalogo",
     href: "/catalog",
     icon: Star
@@ -72,7 +77,6 @@ const navItemsMateriaPrima: NavItem[] = [
     href: "/stuck-products",
     icon: AlertCircle,
   },
-
 ];
 
 export function AppSidebar({
