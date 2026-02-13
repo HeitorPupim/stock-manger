@@ -1,16 +1,25 @@
 // Database Schema:
 import { relations } from "drizzle-orm";
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 // Table generated for testing
 // export const usersTable = pgTable("users", {
 //   id: uuid("id").defaultRandom().primaryKey(),
 // });
 
+// Enumerations 
+// Roles:
+
+export const rolesEnum = ["ADMIN", "USER"] as const;
+export type UserRole = (typeof rolesEnum)[number];
+export const userRoleEnum = pgEnum("user_role", rolesEnum);
+
+
 // ---------- BetterAuth Tables ------------------------------------------------------------------------------------------------
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  role: userRoleEnum("role").notNull().default("USER"),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
@@ -20,6 +29,7 @@ export const user = pgTable("user", {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
 
 export const session = pgTable(
   "session",

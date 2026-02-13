@@ -31,8 +31,6 @@ type NavItem = {
   icon: typeof LayoutDashboard;
 };
 
-
-
 const navItemsMenu: NavItem[] = [
   {
     title: "Estoque Minimo",
