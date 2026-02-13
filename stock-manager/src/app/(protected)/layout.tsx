@@ -20,8 +20,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar user={toUserSummary(session?.user)} />
-      <SidebarInset>
-        <div className="flex-1">{children}</div>
+      <SidebarInset className="min-w-0">
+        <div className="flex-1 min-w-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
