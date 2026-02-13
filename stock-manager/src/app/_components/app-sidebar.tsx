@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Box,  Flame, LayoutDashboard,  OctagonAlert,  Siren, Star } from "lucide-react";
+import { AlertCircle, Box,  Flame, Goal, LayoutDashboard,  OctagonAlert,  Siren, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
@@ -77,6 +77,15 @@ const navItemsMateriaPrima: NavItem[] = [
   },
 ];
 
+const navItemsProducao: NavItem[] = [
+  {
+    title: "Prioridade de Produção",
+    href: "/production-priority",
+    icon: Goal,
+  },
+];
+
+
 export function AppSidebar({
   user,
   ...props
@@ -150,6 +159,31 @@ export function AppSidebar({
                 const isActive = pathname.startsWith(item.href);
                 const Icon = item.icon;
 
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      tooltip={item.title}
+                    >
+                      <Link href={item.href}>
+                        <Icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Produção</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItemsProducao.map((item) => {
+                const isActive = pathname.startsWith(item.href);
+                const Icon = item.icon;
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
