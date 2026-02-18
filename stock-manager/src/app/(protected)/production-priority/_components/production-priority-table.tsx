@@ -29,6 +29,10 @@ import type { ProductionPriorityRow } from "@/src/app/data/prioridade-producao";
 
 import { createProductionPriorityColumns } from "./production-priority-columns";
 
+const getRowKey = (row: ProductionPriorityRow, index: number) =>
+  row.idProduto ?? row.skuProduto ?? `row-${index}`;
+
+
 const ProductionPriorityTable = ({
   data,
   catalogSkus,
@@ -181,25 +185,30 @@ const ProductionPriorityTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="odd:bg-muted/20">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={
-                        cell.column.id === "nomeProduto"
-                          ? "whitespace-normal break-words"
-                          : undefined
-                      }
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+                            table.getRowModel().rows.map((row, index) => {
+                              const sku = row.original.skuProduto ?? "";
+                              const isGrayRow = sku.toLowerCase().endsWith("ee");
+              
+                              return (
+                                <TableRow
+                                  key={getRowKey(row.original, index)}
+                                  className={
+                                    isGrayRow
+                                      ? "bg-muted-foreground/20 "
+                                      : "odd:bg-muted/20"
+                                  }
+                                >
+                                {row.getVisibleCells().map((cell) => (
+                                  <TableCell key={cell.id}>
+                                    {flexRender(
+                                      cell.column.columnDef.cell,
+                                      cell.getContext()
+                                    )}
+                                  </TableCell>
+                                ))}
+                                </TableRow>
+                              );
+                            })
             )}
           </TableBody>
         </Table>
